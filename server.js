@@ -1,11 +1,19 @@
 const express = require("express");
+
+const {errorHandler} = require("./middleware/errorMiddleware");
+
 const dotenv = require("dotenv").config();
+const connectDB = require("./connect/db");
  const port = process.env.PORT || 5000;
+
+connectDB();
 
  const app = express();
 
- app.get('/api/tasks', (req, res)=>{
-    res.status(200).json({message: 'Get all Task'})
- })
+ app.use(express.json());
+ app.use(express.urlencoded({ extended: false }));
 
+ app.use(errorHandler);
+
+app.use('/api/tasks', require('./routes/taskRoutes'));
  app.listen(port, ()=>console.log(`Server is running on port ${port}`));
